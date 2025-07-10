@@ -1,0 +1,2 @@
+C:/Users/Admin/Desktop/coka_mobile/coka/android/app/.cxx/Debug/3v5t3m6n/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/Admin/Desktop/coka_mobile/coka/android/app/.cxx/Debug/3v5t3m6n/armeabi-v7a/CMakeFiles/rebuild_cache.dir

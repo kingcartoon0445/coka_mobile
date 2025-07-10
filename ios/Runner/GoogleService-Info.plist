@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>882931293778-um3bi17983j6k973mnrjd5gagj7u4h9f.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.882931293778-um3bi17983j6k973mnrjd5gagj7u4h9f</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>882931293778-5h0cpvetdjno3vhlk7j00q12r9mmp9cv.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA212c2DQh-6_PGCq3bQj6_2Bma9Q-kLBo</string>
+	<key>GCM_SENDER_ID</key>
+	<string>882931293778</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.azvidi.coka</string>
+	<key>PROJECT_ID</key>
+	<string>coka-crm</string>
+	<key>STORAGE_BUCKET</key>
+	<string>coka-crm.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:882931293778:ios:86fecb885a4230ace6c98b</string>
+	<key>DATABASE_URL</key>
+	<string>https://coka-crm-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+</dict>
+</plist>

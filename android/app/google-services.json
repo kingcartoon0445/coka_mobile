@@ -1,0 +1,79 @@
+{
+  "project_info": {
+    "project_number": "882931293778",
+    "firebase_url": "https://coka-crm-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "coka-crm",
+    "storage_bucket": "coka-crm.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:882931293778:android:0d90492874ce171be6c98b",
+        "android_client_info": {
+          "package_name": "com.azvidi.coka"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "882931293778-5n8u34kspr10aeu6hisqv7a6pcmj2bh7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.azvidi.coka",
+            "certificate_hash": "e9cf08b6bfbba1c6d033ffc396b4428531aa067d"
+          }
+        },
+        {
+          "client_id": "882931293778-i66ahiikpmeocuuu7kg24v1uvdc4r8mc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.azvidi.coka",
+            "certificate_hash": "1a52af51842c0511bee90772bcad7da62b364f87"
+          }
+        },
+        {
+          "client_id": "882931293778-l2o2e0m36hcb79hdv7t7qmn3h6b9gk32.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.azvidi.coka",
+            "certificate_hash": "21eadb13639216d33ba7639553c8640e14ba1020"
+          }
+        },
+        {
+          "client_id": "882931293778-v9lkptje0kooqokjk3a8s34ennh192lp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.azvidi.coka",
+            "certificate_hash": "91e1d3ed2508312b14f8ddeb3c5585121eaaa231"
+          }
+        },
+        {
+          "client_id": "882931293778-qbtkqtjsfv7b2ik8m96sliqhf64a793c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEFsGMdoG3C2lSeoEU5iVRFPmwR4YlHKs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "882931293778-d7drekh9422bln8jhh98f812vl00d1tq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "882931293778-l9jjqcpjps9d4cplgnn7o92vn90ope0c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.azvidi.coka"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

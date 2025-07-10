@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CoKa</string>
+    <!-- Replace with your Facebook App ID -->
+    <string name="facebook_app_id">1751811208512576</string>
+    <!-- Replace with your Facebook Client Token -->
+    <string name="facebook_client_token">4afe7155afcde011172f340625206fcc</string>
+    <!-- Replace with your Facebook Login Protocol Scheme -->
+    <string name="fb_login_protocol_scheme">fb1751811208512576</string>
+</resources> 

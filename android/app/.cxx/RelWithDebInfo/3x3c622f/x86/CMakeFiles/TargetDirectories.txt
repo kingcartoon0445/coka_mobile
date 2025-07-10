@@ -1,0 +1,2 @@
+C:/Users/Admin/Desktop/coka_mobile/coka/android/app/.cxx/RelWithDebInfo/3x3c622f/x86/CMakeFiles/edit_cache.dir
+C:/Users/Admin/Desktop/coka_mobile/coka/android/app/.cxx/RelWithDebInfo/3x3c622f/x86/CMakeFiles/rebuild_cache.dir
