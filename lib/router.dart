@@ -32,6 +32,18 @@ import 'pages/organization/organization_page.dart';
 import 'pages/organization/settings/settings_page.dart';
 import 'paths.dart';
 
+GoRouter createAppRouter(String initialLocation) {
+  return GoRouter(
+    initialLocation: initialLocation,
+    routes: appRoutes,
+    redirect: (context, state) async {
+      // Logic điều hướng như kiểm tra token
+      return null;
+    },
+    debugLogDiagnostics: true,
+  );
+}
+
 final appRoutes = <RouteBase>[
   GoRoute(path: AppPaths.login, builder: (context, state) => const LoginPage()),
   GoRoute(path: AppPaths.completeProfile, builder: (context, state) => const CompleteProfilePage()),
