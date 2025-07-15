@@ -18,6 +18,7 @@ class MessageRepository {
       data: data,
       options: Options(headers: {'organizationid': organizationId}),
     );
+
     return response.data;
   }
 
@@ -245,7 +246,7 @@ class MessageRepository {
         options: Options(headers: {'organizationid': organizationId}),
       );
 
-      if (response.data['code'] != null && response.data['code'] != 200) {
+      if (response.data['code'] != null && response.data['code'] != 0) {
         final msg = response.data['message'] ?? 'Gửi file thất bại';
         throw Exception(msg);
       }

@@ -1,5 +1,8 @@
-import '../api_client.dart';
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
+
+import '../api_client.dart';
 
 class ReportRepository {
   final ApiClient _apiClient;
@@ -112,9 +115,7 @@ class ReportRepository {
     final response = await _apiClient.dio.get(
       '$_baseUrl/crm/report/getstatisticsovertime',
       queryParameters: queryParams,
-      options: Options(headers: {
-        'organizationId': organizationId,
-      }),
+      options: Options(headers: {'organizationId': organizationId, "workspaceId": workspaceId}),
     );
     return response.data;
   }
@@ -136,6 +137,7 @@ class ReportRepository {
       queryParameters: queryParams,
       options: Options(headers: {
         'organizationId': organizationId,
+        "workspaceId": workspaceId,
       }),
     );
     return response.data;
@@ -171,10 +173,9 @@ class ReportRepository {
     final response = await _apiClient.dio.get(
       '$_baseUrl/crm/report/getstatisticsbystagegroup',
       queryParameters: queryParameters,
-      options: Options(headers: {
-        'organizationId': organizationId,
-      }),
+      options: Options(headers: {'organizationId': organizationId, "workspaceId": workspaceId}),
     );
+    log("message: $response");
     return response.data;
   }
 }

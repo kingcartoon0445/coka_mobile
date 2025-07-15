@@ -1,335 +1,230 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'pages/auth/login_page.dart';
+
 import 'pages/auth/complete_profile_page.dart';
-import 'pages/organization/organization_page.dart';
-import 'pages/organization/detail_organization/detail_organization_page.dart';
-import 'pages/organization/messages/messages_page.dart';
-import 'pages/organization/messages/message_settings_page.dart';
-import 'pages/organization/messages/chat_detail_page.dart';
-import 'pages/organization/campaigns/campaigns_page.dart';
-import 'pages/organization/campaigns/multi_source_connection/multi_source_connection_page.dart';
+import 'pages/auth/login_page.dart';
 import 'pages/organization/campaigns/ai_chatbot/ai_chatbot_page.dart';
 import 'pages/organization/campaigns/ai_chatbot/create_chatbot_page.dart';
 import 'pages/organization/campaigns/ai_chatbot/edit_chatbot_page.dart';
-import 'pages/organization/campaigns/fill_data/fill_data_page.dart';
 import 'pages/organization/campaigns/automation/automation_page.dart';
-import 'pages/organization/detail_organization/workspace/detail_workspace_page.dart';
-import 'pages/organization/detail_organization/workspace/customers/customers_page.dart';
-import 'pages/organization/detail_organization/workspace/teams/teams_page.dart';
-import 'pages/organization/detail_organization/workspace/teams/team_detail_page.dart';
-import 'pages/organization/detail_organization/workspace/reports/reports_page.dart';
+import 'pages/organization/campaigns/campaigns_page.dart';
+import 'pages/organization/campaigns/fill_data/fill_data_page.dart';
+import 'pages/organization/campaigns/multi_source_connection/multi_source_connection_page.dart';
+import 'pages/organization/create_organization_page.dart';
+import 'pages/organization/detail_organization/detail_organization_page.dart';
+import 'pages/organization/detail_organization/workspace/customers/add_customer_page.dart';
 import 'pages/organization/detail_organization/workspace/customers/customer_detail/customer_detail_page.dart';
 import 'pages/organization/detail_organization/workspace/customers/customer_detail/pages/customer_basic_info_page.dart';
+import 'pages/organization/detail_organization/workspace/customers/customers_page.dart';
 import 'pages/organization/detail_organization/workspace/customers/edit_customer_page.dart';
-import 'pages/organization/detail_organization/workspace/customers/add_customer_page.dart';
 import 'pages/organization/detail_organization/workspace/customers/import_googlesheet_page.dart';
+import 'pages/organization/detail_organization/workspace/detail_workspace_page.dart';
 import 'pages/organization/detail_organization/workspace/reminders/reminder_list_page.dart';
-import 'pages/organization/settings/settings_page.dart';
-import 'pages/organization/notifications/notifications_page.dart';
-import 'pages/organization/create_organization_page.dart';
+import 'pages/organization/detail_organization/workspace/reports/reports_page.dart';
+import 'pages/organization/detail_organization/workspace/teams/team_detail_page.dart';
+import 'pages/organization/detail_organization/workspace/teams/teams_page.dart';
 import 'pages/organization/invitation_page.dart';
 import 'pages/organization/join_request_page.dart';
+import 'pages/organization/messages/chat_detail_page.dart';
+import 'pages/organization/messages/message_settings_page.dart';
+import 'pages/organization/messages/messages_page.dart';
+import 'pages/organization/notifications/notifications_page.dart';
+import 'pages/organization/organization_page.dart';
+import 'pages/organization/settings/settings_page.dart';
+import 'paths.dart';
 
-final appRoutes = [
-  // Auth routes
+final appRoutes = <RouteBase>[
+  GoRoute(path: AppPaths.login, builder: (context, state) => const LoginPage()),
+  GoRoute(path: AppPaths.completeProfile, builder: (context, state) => const CompleteProfilePage()),
   GoRoute(
-    path: '/',
-    builder: (context, state) => const LoginPage(),
+      path: AppPaths.organizationCreate,
+      builder: (context, state) => const CreateOrganizationPage()),
+  GoRoute(
+    path: AppPaths.chatDetail(':organizationId', ':conversationId'),
+    builder: (context, state) => ChatDetailPage(
+      organizationId: state.pathParameters['organizationId']!,
+      conversationId: state.pathParameters['conversationId']!,
+    ),
   ),
   GoRoute(
-    path: '/complete-profile',
-    builder: (context, state) => const CompleteProfilePage(),
+    path: AppPaths.multiSourceConnection(':organizationId'),
+    builder: (context, state) => MultiSourceConnectionPage(
+      organizationId: state.pathParameters['organizationId']!,
+    ),
   ),
   GoRoute(
-    path: '/organization/create',
-    builder: (context, state) => const CreateOrganizationPage(),
+    path: AppPaths.fillData(':organizationId'),
+    builder: (context, state) => FillDataPage(
+      organizationId: state.pathParameters['organizationId']!,
+    ),
   ),
-
-  // Chat detail route (đặt trước ShellRoute để ưu tiên match)
   GoRoute(
-    path: '/organization/:organizationId/messages/detail/:conversationId',
-    builder: (context, state) {
-      final organizationId = state.pathParameters['organizationId']!;
-      final conversationId = state.pathParameters['conversationId']!;
-      return ChatDetailPage(
-        organizationId: organizationId,
-        conversationId: conversationId,
-      );
-    },
+    path: AppPaths.automation(':organizationId'),
+    builder: (context, state) => AutomationPage(
+      organizationId: state.pathParameters['organizationId']!,
+    ),
   ),
-  
-  // Multi-source connection route (độc lập, không dùng ShellRoute)
-  GoRoute(
-    path: '/organization/:organizationId/campaigns/multi-source-connection',
-    builder: (context, state) {
-      final organizationId = state.pathParameters['organizationId']!;
-      return MultiSourceConnectionPage(organizationId: organizationId);
-    },
-  ),
-
-  // Fill Data route (độc lập, không dùng ShellRoute)
-  GoRoute(
-    path: '/organization/:organizationId/campaigns/fill-data',
-    builder: (context, state) {
-      final organizationId = state.pathParameters['organizationId']!;
-      return FillDataPage(organizationId: organizationId);
-    },
-  ),
-
-  // Automation route (độc lập, không dùng ShellRoute)
-  GoRoute(
-    path: '/organization/:organizationId/campaigns/automation',
-    builder: (context, state) {
-      final organizationId = state.pathParameters['organizationId']!;
-      return AutomationPage(organizationId: organizationId);
-    },
-  ),
-
-  // Organization routes with shell
   ShellRoute(
-    builder: (context, state, child) {
-      final organizationId = state.pathParameters['organizationId'];
-      if (organizationId == null) return const SizedBox();
-      return OrganizationPage(
-        organizationId: organizationId,
-        child: child,
-      );
-    },
+    builder: (context, state, child) => OrganizationPage(
+      organizationId: state.pathParameters['organizationId']!,
+      child: child,
+    ),
     routes: [
       GoRoute(
-        path: '/organization/:organizationId',
-        builder: (context, state) {
-          final organizationId = state.pathParameters['organizationId']!;
-          return DetailOrganizationPage(organizationId: organizationId);
-        },
+        path: AppPaths.organization(':organizationId'),
+        builder: (context, state) => DetailOrganizationPage(
+          organizationId: state.pathParameters['organizationId']!,
+        ),
       ),
       GoRoute(
-        path: '/organization/:organizationId/messages',
-        builder: (context, state) {
-          final organizationId = state.pathParameters['organizationId']!;
-          return MessagesPage(organizationId: organizationId);
-        },
+        path: AppPaths.messages(':organizationId'),
+        builder: (context, state) => MessagesPage(
+          organizationId: state.pathParameters['organizationId']!,
+        ),
         routes: [
           GoRoute(
             path: 'settings',
-            builder: (context, state) {
-              final organizationId = state.pathParameters['organizationId']!;
-              return MessageSettingsPage(organizationId: organizationId);
-            },
+            builder: (context, state) => MessageSettingsPage(
+              organizationId: state.pathParameters['organizationId']!,
+            ),
           ),
         ],
       ),
       GoRoute(
-        path: '/organization/:organizationId/campaigns',
-        builder: (context, state) {
-          final organizationId = state.pathParameters['organizationId']!;
-          return CampaignsPage(organizationId: organizationId);
-        },
-      ),
-      // AI Chatbot routes
-      GoRoute(
-        path: '/organization/:organizationId/campaigns/ai-chatbot',
-        builder: (context, state) {
-          final organizationId = state.pathParameters['organizationId']!;
-          return AIChatbotPage(organizationId: organizationId);
-        },
+        path: AppPaths.campaigns(':organizationId'),
+        builder: (context, state) => CampaignsPage(
+          organizationId: state.pathParameters['organizationId']!,
+        ),
       ),
       GoRoute(
-        path: '/organization/:organizationId/campaigns/ai-chatbot/create',
-        builder: (context, state) {
-          final organizationId = state.pathParameters['organizationId']!;
-          return CreateChatbotPage(organizationId: organizationId);
-        },
+        path: AppPaths.aiChatbot(':organizationId'),
+        builder: (context, state) => AIChatbotPage(
+          organizationId: state.pathParameters['organizationId']!,
+        ),
       ),
       GoRoute(
-        path: '/organization/:organizationId/campaigns/ai-chatbot/edit/:chatbotId',
-        builder: (context, state) {
-          final organizationId = state.pathParameters['organizationId']!;
-          final chatbotId = state.pathParameters['chatbotId']!;
-          return EditChatbotPage(
-            organizationId: organizationId,
-            chatbotId: chatbotId,
-          );
-        },
+        path: AppPaths.createChatbot(':organizationId'),
+        builder: (context, state) => CreateChatbotPage(
+          organizationId: state.pathParameters['organizationId']!,
+        ),
       ),
       GoRoute(
-        path: '/organization/:organizationId/notifications',
-        builder: (context, state) {
-          final organizationId = state.pathParameters['organizationId']!;
-          return NotificationsPage(organizationId: organizationId);
-        },
+        path: AppPaths.editChatbot(':organizationId', ':chatbotId'),
+        builder: (context, state) => EditChatbotPage(
+          organizationId: state.pathParameters['organizationId']!,
+          chatbotId: state.pathParameters['chatbotId']!,
+        ),
       ),
       GoRoute(
-        path: '/organization/:organizationId/settings',
-        builder: (context, state) {
-          final organizationId = state.pathParameters['organizationId']!;
-          return SettingsPage(organizationId: organizationId);
-        },
+        path: AppPaths.notifications(':organizationId'),
+        builder: (context, state) => NotificationsPage(
+          organizationId: state.pathParameters['organizationId']!,
+        ),
       ),
       GoRoute(
-        path: '/organization/:organizationId/invitations',
-        builder: (context, state) {
-          return const InvitationPage();
-        },
+        path: AppPaths.settings(':organizationId'),
+        builder: (context, state) => SettingsPage(
+          organizationId: state.pathParameters['organizationId']!,
+        ),
       ),
       GoRoute(
-        path: '/organization/:organizationId/join-requests',
-        builder: (context, state) {
-          final organizationId = state.pathParameters['organizationId']!;
-          return JoinRequestPage(organizationId: organizationId);
-        },
+        path: AppPaths.invitations(':organizationId'),
+        builder: (context, state) => const InvitationPage(),
+      ),
+      GoRoute(
+        path: AppPaths.joinRequests(':organizationId'),
+        builder: (context, state) => JoinRequestPage(
+          organizationId: state.pathParameters['organizationId']!,
+        ),
       ),
     ],
   ),
-
-  // Workspace routes with shell
   ShellRoute(
-    builder: (context, state, child) {
-      final organizationId = state.pathParameters['organizationId'];
-      final workspaceId = state.pathParameters['workspaceId'];
-      if (organizationId == null || workspaceId == null) {
-        return const SizedBox();
-      }
-      return DetailWorkspacePage(
-        organizationId: organizationId,
-        workspaceId: workspaceId,
-        child: child,
-      );
-    },
+    builder: (context, state, child) => DetailWorkspacePage(
+      organizationId: state.pathParameters['organizationId']!,
+      workspaceId: state.pathParameters['workspaceId']!,
+      child: child,
+    ),
     routes: [
       GoRoute(
-        path: '/organization/:organizationId/workspace/:workspaceId/customers',
-        builder: (context, state) {
-          final organizationId = state.pathParameters['organizationId']!;
-          final workspaceId = state.pathParameters['workspaceId']!;
-          return CustomersPage(
-            organizationId: organizationId,
-            workspaceId: workspaceId,
-          );
-        },
+        path: AppPaths.customers(':organizationId', ':workspaceId'),
+        builder: (context, state) => CustomersPage(
+          organizationId: state.pathParameters['organizationId']!,
+          workspaceId: state.pathParameters['workspaceId']!,
+        ),
         routes: [
           GoRoute(
             path: 'new',
-            builder: (context, state) {
-              final organizationId = state.pathParameters['organizationId']!;
-              final workspaceId = state.pathParameters['workspaceId']!;
-              return AddCustomerPage(
-                organizationId: organizationId,
-                workspaceId: workspaceId,
-              );
-            },
+            builder: (context, state) => AddCustomerPage(
+              organizationId: state.pathParameters['organizationId']!,
+              workspaceId: state.pathParameters['workspaceId']!,
+            ),
           ),
           GoRoute(
             path: 'import-googlesheet',
-            builder: (context, state) {
-              final organizationId = state.pathParameters['organizationId']!;
-              final workspaceId = state.pathParameters['workspaceId']!;
-              return ImportGoogleSheetPage(
-                organizationId: organizationId,
-                workspaceId: workspaceId,
-              );
-            },
+            builder: (context, state) => ImportGoogleSheetPage(
+              organizationId: state.pathParameters['organizationId']!,
+              workspaceId: state.pathParameters['workspaceId']!,
+            ),
           ),
           GoRoute(
             path: ':customerId',
-            builder: (context, state) {
-              final organizationId = state.pathParameters['organizationId']!;
-              final workspaceId = state.pathParameters['workspaceId']!;
-              final customerId = state.pathParameters['customerId']!;
-              return CustomerDetailPage(
-                organizationId: organizationId,
-                workspaceId: workspaceId,
-                customerId: customerId,
-              );
-            },
+            builder: (context, state) => CustomerDetailPage(
+              organizationId: state.pathParameters['organizationId']!,
+              workspaceId: state.pathParameters['workspaceId']!,
+              customerId: state.pathParameters['customerId']!,
+            ),
             routes: [
               GoRoute(
                 path: 'basic-info',
-                builder: (context, state) {
-                  final organizationId =
-                      state.pathParameters['organizationId']!;
-                  final workspaceId = state.pathParameters['workspaceId']!;
-                  final customerId = state.pathParameters['customerId']!;
-                  final customerDetail = state.extra as Map<String, dynamic>;
-                  return CustomerBasicInfoPage(
-                    customerDetail: customerDetail,
-                  );
-                },
+                builder: (context, state) => CustomerBasicInfoPage(
+                  customerDetail: state.extra as Map<String, dynamic>,
+                ),
               ),
               GoRoute(
                 path: 'edit',
-                builder: (context, state) {
-                  final organizationId =
-                      state.pathParameters['organizationId']!;
-                  final workspaceId = state.pathParameters['workspaceId']!;
-                  final customerId = state.pathParameters['customerId']!;
-                  final customerDetail = state.extra as Map<String, dynamic>;
-                  return EditCustomerPage(
-                    organizationId: organizationId,
-                    workspaceId: workspaceId,
-                    customerId: customerId,
-                    customerData: customerDetail,
-                  );
-                },
+                builder: (context, state) => EditCustomerPage(
+                  organizationId: state.pathParameters['organizationId']!,
+                  workspaceId: state.pathParameters['workspaceId']!,
+                  customerId: state.pathParameters['customerId']!,
+                  customerData: state.extra as Map<String, dynamic>,
+                ),
               ),
               GoRoute(
                 path: 'reminders',
-                builder: (context, state) {
-                  final organizationId =
-                      state.pathParameters['organizationId']!;
-                  final workspaceId = state.pathParameters['workspaceId']!;
-                  final customerId = state.pathParameters['customerId']!;
-                  return ReminderListPage(
-                    organizationId: organizationId,
-                    workspaceId: workspaceId,
-                    contactId: customerId,
-                  );
-                },
+                builder: (context, state) => ReminderListPage(
+                  organizationId: state.pathParameters['organizationId']!,
+                  workspaceId: state.pathParameters['workspaceId']!,
+                  contactId: state.pathParameters['customerId']!,
+                ),
               ),
             ],
           ),
         ],
       ),
       GoRoute(
-        path: '/organization/:organizationId/workspace/:workspaceId/teams',
-        builder: (context, state) {
-          final organizationId = state.pathParameters['organizationId']!;
-          final workspaceId = state.pathParameters['workspaceId']!;
-          return TeamsPage(
-            organizationId: organizationId,
-            workspaceId: workspaceId,
-          );
-        },
+        path: AppPaths.teams(':organizationId', ':workspaceId'),
+        builder: (context, state) => TeamsPage(
+          organizationId: state.pathParameters['organizationId']!,
+          workspaceId: state.pathParameters['workspaceId']!,
+        ),
         routes: [
           GoRoute(
             path: ':teamId',
-            builder: (context, state) {
-              final organizationId = state.pathParameters['organizationId']!;
-              final workspaceId = state.pathParameters['workspaceId']!;
-              final teamId = state.pathParameters['teamId']!;
-              return TeamDetailPage(
-                organizationId: organizationId,
-                workspaceId: workspaceId,
-                teamId: teamId,
-              );
-            },
+            builder: (context, state) => TeamDetailPage(
+              organizationId: state.pathParameters['organizationId']!,
+              workspaceId: state.pathParameters['workspaceId']!,
+              teamId: state.pathParameters['teamId']!,
+            ),
           ),
         ],
       ),
       GoRoute(
-        path: '/organization/:organizationId/workspace/:workspaceId/reports',
-        builder: (context, state) {
-          final organizationId = state.pathParameters['organizationId']!;
-          final workspaceId = state.pathParameters['workspaceId']!;
-          return ReportsPage(
-            organizationId: organizationId,
-            workspaceId: workspaceId,
-          );
-        },
+        path: AppPaths.reports(':organizationId', ':workspaceId'),
+        builder: (context, state) => ReportsPage(
+          organizationId: state.pathParameters['organizationId']!,
+          workspaceId: state.pathParameters['workspaceId']!,
+        ),
       ),
     ],
   ),
-
-
 ];

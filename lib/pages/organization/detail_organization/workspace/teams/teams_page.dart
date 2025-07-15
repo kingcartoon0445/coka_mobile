@@ -1,11 +1,14 @@
 import 'dart:async';
+
+import 'package:coka/providers/team_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../../shared/widgets/avatar_widget.dart';
-import '../../../../../shared/widgets/search_bar.dart';
-import '../../../../../shared/widgets/dropdown_button_widget.dart';
+import 'package:go_router/go_router.dart';
+
 import '../../../../../models/find_child.dart';
-import 'package:coka/providers/team_provider.dart';
+import '../../../../../shared/widgets/avatar_widget.dart';
+import '../../../../../shared/widgets/dropdown_button_widget.dart';
+import '../../../../../shared/widgets/search_bar.dart';
 
 class TeamsPage extends ConsumerStatefulWidget {
   final String organizationId;
@@ -36,12 +39,13 @@ class _TeamsPageState extends ConsumerState<TeamsPage> {
     super.initState();
     // Sử dụng provider đúng
     Future.microtask(() {
-      ref.read(teamListProvider.notifier).fetchTeamList(
-          widget.organizationId, widget.workspaceId,
-          isTreeView: true);
-      ref.read(memberListProvider.notifier).fetchMemberList(
-          widget.organizationId, widget.workspaceId, "", // Cần teamId ở đây?
-          searchText: searchText.text);
+      ref
+          .read(teamListProvider.notifier)
+          .fetchTeamList(widget.organizationId, widget.workspaceId, isTreeView: true);
+      ref
+          .read(memberListProvider.notifier)
+          .fetchMemberList(widget.organizationId, widget.workspaceId, "", // Cần teamId ở đây?
+              searchText: searchText.text);
     });
   }
 
@@ -84,13 +88,13 @@ class _TeamsPageState extends ConsumerState<TeamsPage> {
       // Không mở bottomsheet nếu không có nhánh con
       return;
     }
-    
+
     // Lấy dữ liệu team hiện tại từ danh sách team
     final teamAsync = ref.read(teamListProvider);
     final currentTeam = teamAsync.value != null && widget.parentId != null
         ? findBranchWithParentId(teamAsync.value!, widget.parentId)
         : null;
-        
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -111,7 +115,9 @@ class _TeamsPageState extends ConsumerState<TeamsPage> {
                   children: [
                     const SizedBox(height: 14),
                     Text(
-                      widget.parentId == null ? "Đội sale" : (currentTeam != null ? currentTeam["name"] : ""),
+                      widget.parentId == null
+                          ? "Đội sale"
+                          : (currentTeam != null ? currentTeam["name"] : ""),
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -122,19 +128,19 @@ class _TeamsPageState extends ConsumerState<TeamsPage> {
                     ...buildMultiWidgetList(
                       teamList,
                       (data) {
-                                              // Chỉ navigate nếu có children
-                      if (data["childs"] != null && (data["childs"] as List).isNotEmpty) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TeamsPage(
-                              organizationId: widget.organizationId,
-                              workspaceId: widget.workspaceId,
-                              parentId: data["id"],
+                        // Chỉ navigate nếu có children
+                        if (data["childs"] != null && (data["childs"] as List).isNotEmpty) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TeamsPage(
+                                organizationId: widget.organizationId,
+                                workspaceId: widget.workspaceId,
+                                parentId: data["id"],
+                              ),
                             ),
-                          ),
-                        );
-                      }
+                          );
+                        }
                       },
                     ),
                   ],
@@ -176,14 +182,14 @@ class _TeamsPageState extends ConsumerState<TeamsPage> {
             Icons.arrow_back,
             color: Color(0xFF1F2329),
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            context.go('/organization/${widget.organizationId}');
+          },
         ),
         title: TitleDropdownButton(
           text: widget.parentId == null
               ? "Đội sale"
-              : findBranchWithParentId(teamListAsync.value ?? [],
-                      widget.parentId)?["name"] ??
-                  "",
+              : findBranchWithParentId(teamListAsync.value ?? [], widget.parentId)?["name"] ?? "",
           onTap: () {
             if (teamListAsync.value != null) {
               // Kiểm tra trước nếu không có dữ liệu thì không mở
@@ -225,8 +231,7 @@ class _TeamsPageState extends ConsumerState<TeamsPage> {
                   }
 
                   teamList = allTeams;
-                  final displayList =
-                      searchText.text.isEmpty ? teamList : filteredTeam;
+                  final displayList = searchText.text.isEmpty ? teamList : filteredTeam;
 
                   return ListView.builder(
                     itemCount: displayList.length,
@@ -298,19 +303,16 @@ class _TeamsPageState extends ConsumerState<TeamsPage> {
                     },
                   );
                 } else {
-                  final teamChild =
-                      findBranchWithParentId(allTeams, widget.parentId);
+                  final teamChild = findBranchWithParentId(allTeams, widget.parentId);
                   if (teamChild == null) {
-                    return const Center(
-                        child: Text('Không tìm thấy thông tin team'));
+                    return const Center(child: Text('Không tìm thấy thông tin team'));
                   }
 
                   teamList = teamChild["childs"] ?? [];
                   leadList = teamChild["managers"] ?? [];
 
                   return memberListAsync.when(
-                    loading: () =>
-                        const Center(child: CircularProgressIndicator()),
+                    loading: () => const Center(child: CircularProgressIndicator()),
                     error: (err, stack) => Center(child: Text('Lỗi: $err')),
                     data: (members) {
                       return SingleChildScrollView(
@@ -346,20 +348,16 @@ class _TeamsPageState extends ConsumerState<TeamsPage> {
                                         if (team['isAutomation'] == true)
                                           Tooltip(
                                             triggerMode: TooltipTriggerMode.tap,
-                                            waitDuration:
-                                                const Duration(seconds: 4),
-                                            message:
-                                                "Phân phối khách hàng tự động",
+                                            waitDuration: const Duration(seconds: 4),
+                                            message: "Phân phối khách hàng tự động",
                                             child: Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
+                                              padding: const EdgeInsets.symmetric(
                                                 horizontal: 6,
                                                 vertical: 3,
                                               ),
                                               decoration: BoxDecoration(
                                                 color: const Color(0xFFE3DEF7),
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
+                                                borderRadius: BorderRadius.circular(12),
                                               ),
                                               child: const Text(
                                                 "Tự động",
@@ -379,13 +377,13 @@ class _TeamsPageState extends ConsumerState<TeamsPage> {
                                     ),
                                     onTap: () {
                                       // Chỉ navigate nếu có children
-                                      if (team["childs"] != null && (team["childs"] as List).isNotEmpty) {
+                                      if (team["childs"] != null &&
+                                          (team["childs"] as List).isNotEmpty) {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => TeamsPage(
-                                              organizationId:
-                                                  widget.organizationId,
+                                              organizationId: widget.organizationId,
                                               workspaceId: widget.workspaceId,
                                               parentId: team["id"],
                                             ),
@@ -420,9 +418,7 @@ class _TeamsPageState extends ConsumerState<TeamsPage> {
                                       ),
                                     ),
                                     subtitle: Text(
-                                      leader['role'] == 'TEAM_LEADER'
-                                          ? 'Trưởng nhóm'
-                                          : 'Phó nhóm',
+                                      leader['role'] == 'TEAM_LEADER' ? 'Trưởng nhóm' : 'Phó nhóm',
                                     ),
                                   );
                                 },
@@ -517,17 +513,13 @@ class _CExpansionTileState extends State<CExpansionTile> {
             ),
           ),
           subtitle: Text(
-            widget.managers.isEmpty
-                ? "Chưa có trưởng nhóm"
-                : widget.managers[0]["fullName"],
+            widget.managers.isEmpty ? "Chưa có trưởng nhóm" : widget.managers[0]["fullName"],
             style: const TextStyle(fontSize: 12, color: Color(0xFF646A72)),
           ),
           trailing: widget.childs.isEmpty
               ? null
               : Icon(
-                  _isExpanded
-                      ? Icons.keyboard_arrow_up
-                      : Icons.keyboard_arrow_down,
+                  _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                   color: const Color(0xFF646A72),
                 ),
           onTap: () {

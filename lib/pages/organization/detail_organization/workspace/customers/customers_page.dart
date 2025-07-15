@@ -1,24 +1,26 @@
+import 'dart:async';
+import 'dart:developer' as developer;
+
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../../../../api/repositories/workspace_repository.dart';
+
 import '../../../../../api/api_client.dart';
-import '../../../../../shared/widgets/workspace_list_modal.dart';
-import '../../../../../shared/widgets/dropdown_button_widget.dart';
+import '../../../../../api/repositories/report_repository.dart';
+import '../../../../../api/repositories/workspace_repository.dart';
+import '../../../../../core/constants/app_constants.dart';
 import '../../../../../core/theme/app_colors.dart';
-import 'dart:developer' as developer;
-import 'dart:async';
+import '../../../../../core/utils/helpers.dart';
+import '../../../../../shared/widgets/dropdown_button_widget.dart';
+import '../../../../../shared/widgets/workspace_list_modal.dart';
 import 'widgets/customers_list.dart';
 import 'widgets/filter_modal.dart';
-import '../../../../../core/constants/app_constants.dart';
-import '../../../../../api/repositories/report_repository.dart';
-import '../../../../../core/utils/helpers.dart';
 import 'widgets/import_contact_bottomsheet.dart';
-import 'package:collection/collection.dart';
-import 'package:intl/intl.dart';
 
 class CustomersPage extends StatefulWidget {
   final String organizationId;
@@ -34,8 +36,7 @@ class CustomersPage extends StatefulWidget {
   State<CustomersPage> createState() => _CustomersPageState();
 }
 
-class _CustomersPageState extends State<CustomersPage>
-    with SingleTickerProviderStateMixin {
+class _CustomersPageState extends State<CustomersPage> with SingleTickerProviderStateMixin {
   late final WorkspaceRepository _workspaceRepository;
   late final ReportRepository _reportRepository;
   late final TabController _tabController;
@@ -78,7 +79,7 @@ class _CustomersPageState extends State<CustomersPage>
     _workspaceRepository = WorkspaceRepository(ApiClient());
     _reportRepository = ReportRepository(ApiClient());
     _tabController = TabController(length: _tabConfig.length, vsync: this);
-    
+
     // Thêm listener cho tabController để tránh refresh không cần thiết khi tab đang chuyển
     _tabController.addListener(() {
       // Chỉ xử lý khi tab thực sự thay đổi (animation đã hoàn thành)
@@ -87,7 +88,7 @@ class _CustomersPageState extends State<CustomersPage>
         _fetchCustomerCounts();
       }
     });
-    
+
     _fetchCurrentWorkspace();
     _fetchCustomerCounts();
     _searchController.addListener(_handleSearchChange);
@@ -113,8 +114,7 @@ class _CustomersPageState extends State<CustomersPage>
   void didUpdateWidget(CustomersPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.workspaceId != widget.workspaceId) {
-      developer.log(
-          'WorkspaceId changed from ${oldWidget.workspaceId} to ${widget.workspaceId}');
+      developer.log('WorkspaceId changed from ${oldWidget.workspaceId} to ${widget.workspaceId}');
       setState(() => _isLoading = true);
       _fetchCurrentWorkspace();
     }
@@ -133,16 +133,14 @@ class _CustomersPageState extends State<CustomersPage>
           _currentWorkspace = response['content'];
           _isLoading = false;
         });
-        developer
-            .log('Current workspace updated: ${_currentWorkspace?['name']}');
+        developer.log('Current workspace updated: ${_currentWorkspace?['name']}');
       }
     } catch (e) {
       developer.log('Error fetching workspace detail: $e');
       if (mounted) {
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Có lỗi xảy ra khi tải thông tin workspace')),
+          const SnackBar(content: Text('Có lỗi xảy ra khi tải thông tin workspace')),
         );
       }
     }
@@ -210,8 +208,7 @@ class _CustomersPageState extends State<CustomersPage>
 
     if (_currentFilter != null) {
       if (_currentFilter!.dateRange != null) {
-        params['startDate'] =
-            _currentFilter!.dateRange!.start.toIso8601String();
+        params['startDate'] = _currentFilter!.dateRange!.start.toIso8601String();
         params['endDate'] = _currentFilter!.dateRange!.end.toIso8601String();
       }
 
@@ -308,9 +305,7 @@ class _CustomersPageState extends State<CustomersPage>
                 'assets/icons/page_info.svg',
                 width: 20,
                 colorFilter: ColorFilter.mode(
-                  _currentFilter?.hasActiveFilters == true
-                      ? AppColors.primary
-                      : AppColors.text,
+                  _currentFilter?.hasActiveFilters == true ? AppColors.primary : AppColors.text,
                   BlendMode.srcIn,
                 ),
               ),
@@ -404,13 +399,13 @@ class _CustomersPageState extends State<CustomersPage>
   Future<void> _fetchCustomerCounts() async {
     // Hủy bỏ debounce hiện tại nếu có
     _countsDebounce?.cancel();
-    
+
     // Nếu đang lấy dữ liệu, đặt lịch lấy sau 500ms
     if (_isFetchingCounts) {
       _countsDebounce = Timer(const Duration(milliseconds: 500), _fetchCustomerCounts);
       return;
     }
-    
+
     // Tạo params
     final Map<String, dynamic> params = {
       'workspaceId': widget.workspaceId,
@@ -419,8 +414,7 @@ class _CustomersPageState extends State<CustomersPage>
 
     if (_currentFilter != null) {
       if (_currentFilter!.dateRange != null) {
-        params['startDate'] =
-            _currentFilter!.dateRange!.start.toIso8601String();
+        params['startDate'] = _currentFilter!.dateRange!.start.toIso8601String();
         params['endDate'] = _currentFilter!.dateRange!.end.toIso8601String();
       }
 
@@ -465,13 +459,12 @@ class _CustomersPageState extends State<CustomersPage>
     if (_searchQuery?.isNotEmpty ?? false) {
       params['searchText'] = _searchQuery;
     }
-    
+
     // So sánh với các tham số cuối cùng, nếu giống nhau thì không gọi lại API
-    if (_lastQueryParams != null && 
-        _mapEquals(_lastQueryParams, params)) {
+    if (_lastQueryParams != null && _mapEquals(_lastQueryParams, params)) {
       return;
     }
-    
+
     _isFetchingCounts = true;
     try {
       final response = await _reportRepository.getStatisticsByStageGroup(
@@ -479,7 +472,7 @@ class _CustomersPageState extends State<CustomersPage>
         widget.workspaceId,
         queryParameters: params.toQueryParameters(),
       );
-      
+
       // Lưu lại tham số cuối cùng
       _lastQueryParams = Map<String, dynamic>.from(params);
 
@@ -504,8 +497,7 @@ class _CustomersPageState extends State<CustomersPage>
           _isFetchingCounts = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Có lỗi xảy ra khi tải số liệu thống kê')),
+          const SnackBar(content: Text('Có lỗi xảy ra khi tải số liệu thống kê')),
         );
       }
     }
@@ -514,7 +506,7 @@ class _CustomersPageState extends State<CustomersPage>
   bool _mapEquals(Map<String, dynamic>? map1, Map<String, dynamic>? map2) {
     if (map1 == null || map2 == null) return map1 == map2;
     if (map1.length != map2.length) return false;
-    
+
     return _mapEquality.equals(map1, map2);
   }
 
@@ -828,8 +820,7 @@ class _CustomersPageState extends State<CustomersPage>
           icon: Icons.add,
           spacing: 15,
           backgroundColor: const Color(0xFF5C33F0),
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(14))),
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14))),
           activeIcon: Icons.close,
           iconTheme: const IconThemeData(color: Colors.white),
           children: [

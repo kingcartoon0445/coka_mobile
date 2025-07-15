@@ -1,12 +1,12 @@
+import 'package:coka/api/api_client.dart';
+import 'package:coka/api/repositories/chatbot_repository.dart';
 import 'package:coka/core/constants/app_constants.dart';
 import 'package:coka/core/theme/app_colors.dart';
+import 'package:coka/providers/organization_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:coka/providers/organization_provider.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:go_router/go_router.dart';
-import 'package:coka/api/repositories/chatbot_repository.dart';
-import 'package:coka/api/api_client.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ChatbotModel {
   final String id;
@@ -42,9 +42,7 @@ class ChatbotModel {
       typeResponse: json['typeResponse'] ?? 'AI',
       status: json['status'] ?? 0,
       subscribed: json['subscribed'] != null
-          ? (json['subscribed'] as List)
-              .map((e) => SubscribedModel.fromJson(e))
-              .toList()
+          ? (json['subscribed'] as List).map((e) => SubscribedModel.fromJson(e)).toList()
           : null,
     );
   }
@@ -106,7 +104,7 @@ class _AIChatbotPageState extends ConsumerState<AIChatbotPage> {
     try {
       // Tải thông tin tổ chức thông qua provider
       ref.read(currentOrganizationProvider.notifier).loadOrganization(widget.organizationId);
-      
+
       // Tải danh sách chatbot
       await _loadChatbots();
     } catch (e) {
@@ -124,12 +122,11 @@ class _AIChatbotPageState extends ConsumerState<AIChatbotPage> {
   Future<void> _loadChatbots() async {
     try {
       final response = await _chatbotRepository.getChatbotList(widget.organizationId);
-      
+
       if ((response['code'] == 0 || response['code'] == 200) && response['content'] != null) {
         setState(() {
-          _chatbotList = (response['content'] as List)
-              .map((item) => ChatbotModel.fromJson(item))
-              .toList();
+          _chatbotList =
+              (response['content'] as List).map((item) => ChatbotModel.fromJson(item)).toList();
           _errorMessage = ''; // Clear error message khi load thành công
         });
       } else {
@@ -171,7 +168,7 @@ class _AIChatbotPageState extends ConsumerState<AIChatbotPage> {
     // Đọc thông tin tổ chức từ provider
     final organizationState = ref.watch(currentOrganizationProvider);
     final isAdminOrOwner = ref.watch(isAdminOrOwnerProvider);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -181,20 +178,23 @@ class _AIChatbotPageState extends ConsumerState<AIChatbotPage> {
       body: _isLoading || organizationState is AsyncLoading
           ? _buildLoadingSkeleton()
           : _buildBody(isAdminOrOwner),
-      floatingActionButton: isAdminOrOwner ? FloatingActionButton(
-        onPressed: () async {
-          final result = await context.push('/organization/${widget.organizationId}/campaigns/ai-chatbot/create');
-          // Nếu tạo chatbot thành công, reload danh sách
-          if (result == true) {
-            _loadChatbots();
-          }
-        },
-        backgroundColor: AppColors.primary,
-        child: const Icon(Icons.add, color: Colors.white),
-      ) : null,
+      floatingActionButton: isAdminOrOwner
+          ? FloatingActionButton(
+              onPressed: () async {
+                final result = await context
+                    .push('/organization/${widget.organizationId}/campaigns/ai-chatbot/create');
+                // Nếu tạo chatbot thành công, reload danh sách
+                if (result == true) {
+                  _loadChatbots();
+                }
+              },
+              backgroundColor: AppColors.primary,
+              child: const Icon(Icons.add, color: Colors.white),
+            )
+          : null,
     );
   }
-  
+
   Widget _buildLoadingSkeleton() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -281,7 +281,7 @@ class _AIChatbotPageState extends ConsumerState<AIChatbotPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              '${AppConstants.imagePath}/empty_state.png',
+              '${AppConstants.imagePath}/empty_script.png',
               width: 120,
               height: 120,
             ),
@@ -322,7 +322,8 @@ class _AIChatbotPageState extends ConsumerState<AIChatbotPage> {
   Widget _buildChatbotItem(ChatbotModel chatbot) {
     return InkWell(
       onTap: () {
-        context.push('/organization/${widget.organizationId}/campaigns/ai-chatbot/edit/${chatbot.id}');
+        context
+            .push('/organization/${widget.organizationId}/campaigns/ai-chatbot/edit/${chatbot.id}');
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -397,7 +398,7 @@ class _AIChatbotPageState extends ConsumerState<AIChatbotPage> {
                     );
                   }
                 });
-                
+
                 // Gọi API cập nhật trạng thái
                 _updateChatbotStatus(chatbot.id, value);
               },
@@ -407,4 +408,4 @@ class _AIChatbotPageState extends ConsumerState<AIChatbotPage> {
       ),
     );
   }
-} 
+}

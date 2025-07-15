@@ -203,6 +203,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
     // Tạo local message ngay lập tức (theo logic web)
     final localMessage = _createLocalMessage(
       content: currentMessage,
+
       filePath: filePath,
       fileName: fileName,
       isImage: isActuallyImage, // Use detected MIME type
@@ -303,8 +304,10 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
         from: '124662217400086', // Page ID
         fromName: 'You',
         to: '',
+
         toName: '',
         message: content,
+        isFromMe: true,
         timestamp: DateTime.now().millisecondsSinceEpoch ~/ 1000,
         isGpt: false,
         type: 'MESSAGE',
@@ -333,6 +336,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
         from: '124662217400086', // Page ID
         fromName: 'You',
         to: '',
+        isFromMe: true,
         toName: '',
         message: content,
         timestamp: DateTime.now().millisecondsSinceEpoch ~/ 1000,
