@@ -1,13 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:coka/core/theme/text_styles.dart';
-import 'package:coka/core/constants/app_constants.dart';
-import 'package:coka/shared/widgets/loading_button.dart';
-import 'package:coka/core/theme/app_colors.dart';
-import 'package:coka/api/repositories/auth_repository.dart';
 import 'package:coka/api/api_client.dart';
+import 'package:coka/api/repositories/auth_repository.dart';
+import 'package:coka/core/constants/app_constants.dart';
+import 'package:coka/core/theme/app_colors.dart';
+import 'package:coka/core/theme/text_styles.dart';
+import 'package:coka/shared/widgets/loading_button.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
+
 import '../../core/utils/helpers.dart';
+
 class VerifyOtpPage extends StatefulWidget {
   final String email;
   final String otpId;
@@ -91,8 +93,7 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
                 ? 'Đã gửi lại mã OTP'
                 : (response['message'] ?? 'Không thể gửi lại mã OTP'),
           ),
-          backgroundColor:
-              response['success'] == true ? AppColors.success : AppColors.error,
+          backgroundColor: response['success'] == true ? AppColors.success : AppColors.error,
         ),
       );
     } catch (e) {

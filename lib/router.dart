@@ -1,3 +1,4 @@
+import 'package:coka/pages/organization/create_organization_page.dart';
 import 'package:go_router/go_router.dart';
 
 import 'pages/auth/complete_profile_page.dart';
@@ -9,7 +10,6 @@ import 'pages/organization/campaigns/automation/automation_page.dart';
 import 'pages/organization/campaigns/campaigns_page.dart';
 import 'pages/organization/campaigns/fill_data/fill_data_page.dart';
 import 'pages/organization/campaigns/multi_source_connection/multi_source_connection_page.dart';
-import 'pages/organization/create_organization_page.dart';
 import 'pages/organization/detail_organization/detail_organization_page.dart';
 import 'pages/organization/detail_organization/workspace/customers/add_customer_page.dart';
 import 'pages/organization/detail_organization/workspace/customers/customer_detail/customer_detail_page.dart';
@@ -48,7 +48,7 @@ final appRoutes = <RouteBase>[
   GoRoute(path: AppPaths.login, builder: (context, state) => const LoginPage()),
   GoRoute(path: AppPaths.completeProfile, builder: (context, state) => const CompleteProfilePage()),
   GoRoute(
-      path: AppPaths.organizationCreate,
+      path: AppPaths.createOrganization,
       builder: (context, state) => const CreateOrganizationPage()),
   GoRoute(
     path: AppPaths.chatDetail(':organizationId', ':conversationId'),

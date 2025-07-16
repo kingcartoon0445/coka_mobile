@@ -8,6 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -43,7 +44,7 @@ Future<void> main() async {
 
   timeago.setLocaleMessages('vi', CustomViMessages());
 
-  runApp(MyApp(router: router));
+  runApp(ProviderScope(child: MyApp(router: router)));
 }
 
 class MyApp extends StatelessWidget {
