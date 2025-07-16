@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:coka/pages/organization/messages/widgets/download_file.dart';
+import 'package:coka/pages/organization/messages/widgets/full_image.dart';
 import 'package:coka/shared/widgets/avatar_widget.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -1023,8 +1025,13 @@ class _MessageBubble extends StatelessWidget {
                                           );
                                         }
                                         return _buildFileWidget(
-                                          attachment.name ?? 'File đính kèm',
+                                          attachment.payload!["name"] ?? 'File đính kèm',
                                           () {
+                                            downloadFile(
+                                              context,
+                                              attachment.url,
+                                              attachment.payload!["name"] ?? "coka_file",
+                                            );
                                             // TODO: Open file
                                           },
                                           context,
@@ -1208,6 +1215,11 @@ class _MessageBubble extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => FullScreenImage(imageUrl: url),
+                  ),
+                );
                 // TODO: Implement image viewer
               },
             ),

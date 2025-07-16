@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:coka/api/api_client.dart';
 import 'package:coka/api/repositories/auth_repository.dart';
 import 'package:coka/core/theme/app_colors.dart';
@@ -6,16 +5,20 @@ import 'package:coka/core/theme/text_styles.dart';
 import 'package:coka/pages/auth/complete_profile_page.dart';
 import 'package:coka/pages/organization/invitation_page.dart';
 import 'package:coka/pages/organization/join_organization_page.dart';
+import 'package:coka/pages/organization/messages/messages_connection.dart';
 import 'package:coka/shared/widgets/avatar_widget.dart';
 import 'package:coka/shared/widgets/awesome_alert.dart';
 import 'package:coka/shared/widgets/loading_indicator.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+
 import '../../core/utils/helpers.dart';
+
 class SettingsPage extends StatefulWidget {
   final String? organizationId;
   final String? userRole;
-  
+
   const SettingsPage({
     super.key,
     this.organizationId,
@@ -43,12 +46,12 @@ class _SettingsPageState extends State<SettingsPage> {
     setState(() {
       _isLoading = true;
     });
-    
+
     await Future.wait([
       _loadUserInfo(),
       _loadAppVersion(),
     ]);
-    
+
     setState(() {
       _isLoading = false;
     });
@@ -213,14 +216,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 const Spacer(),
-                if (showArrow)
-                  const Icon(Icons.arrow_forward_ios, size: 16),
+                if (showArrow) const Icon(Icons.arrow_forward_ios, size: 16),
               ],
             ),
           ),
         ),
-        if (showArrow)
-          const Divider(height: 1, color: Colors.transparent),
+        if (showArrow) const Divider(height: 1, color: Colors.transparent),
       ],
     );
   }
@@ -258,6 +259,17 @@ class _SettingsPageState extends State<SettingsPage> {
           'onTap': () {
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => const InvitationPage(),
+            ));
+          },
+        },
+        {
+          'title': 'Kết nối trang',
+          'icon': Icons.connect_without_contact,
+          'onTap': () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => MessagesConnectionPage(
+                organizationId: widget.organizationId ?? '',
+              ),
             ));
           },
         },
@@ -360,4 +372,4 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
-} 
+}

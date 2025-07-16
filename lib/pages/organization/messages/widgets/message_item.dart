@@ -55,23 +55,33 @@ class MessageItem extends ConsumerWidget {
       if (ref.read(facebookMessageProvider).conversations.any((c) => c.id == id)) {
         if (!isRead) {
           ref.read(facebookMessageProvider.notifier).updateStatusRead(organizationId, id);
+          ref.read(allMessageProvider.notifier).updateStatusRead(organizationId, id);
         }
         ref.read(facebookMessageProvider.notifier).selectConversation(id);
+        ref.read(allMessageProvider.notifier).selectConversation(id);
+      } else if (ref.read(allMessageProvider).conversations.any((c) => c.id == id)) {
+        if (!isRead) {
+          ref.read(allMessageProvider.notifier).updateStatusRead(organizationId, id);
+        }
+        ref.read(allMessageProvider.notifier).selectConversation(id);
       }
-    } else if (platform == 'ZALO') {
+    }
+    if (platform == 'ZALO') {
       if (ref.read(zaloMessageProvider).conversations.any((c) => c.id == id)) {
         if (!isRead) {
           ref.read(zaloMessageProvider.notifier).updateStatusRead(organizationId, id);
         }
         ref.read(zaloMessageProvider.notifier).selectConversation(id);
-      }
-    } else {
-      if (ref.read(allMessageProvider).conversations.any((c) => c.id == id)) {
-        if (!isRead) {
-          ref.read(allMessageProvider.notifier).updateStatusRead(organizationId, id);
+      } else {
+        if (ref.read(allMessageProvider).conversations.any((c) => c.id == id)) {
+          if (!isRead) {
+            ref.read(allMessageProvider.notifier).updateStatusRead(organizationId, id);
+          }
+          ref.read(allMessageProvider.notifier).selectConversation(id);
         }
-
-        ref.read(allMessageProvider.notifier).selectConversation(id);
+        // Nếu không tìm thấy conversation trong state, có thể là do chưa tải dữ liệu
+        // Bạn có thể thêm logic để tải dữ liệu nếu cần thiết
+        print('Conversation with id $id not found in allMessageProvider');
       }
     }
 

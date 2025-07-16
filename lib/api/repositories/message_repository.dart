@@ -24,10 +24,15 @@ class MessageRepository {
 
   Future<Map<String, dynamic>> getConversationList(
     String organizationId, {
+    required String integrationAuthId,
+    required String searchText,
+    String sortDesc = 'CreatedDate DESC',
     required int page,
     String? provider,
   }) async {
     final queryParams = {
+      'integrationAuthId': integrationAuthId,
+      'searchText': searchText,
       'offset': page * 20,
       'limit': 20,
       'provider': provider,
@@ -51,6 +56,26 @@ class MessageRepository {
       ApiPath.updateStatusRead(conversationId),
       options: Options(headers: {'organizationid': organizationId}),
     );
+    return response.data;
+  }
+
+  Future updateStatisOmniChannelRes(String id, status, organizationId) async {
+    final response = await _apiClient.dio.patch(
+      ApiPath.updateStatisOmniChannel(id),
+      data: {"status": status},
+      options: Options(headers: {'organizationid': organizationId}),
+    );
+
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> getListMessagesConenction(String organizationId,
+      {required String provider, required String subscribed, required String searchText}) async {
+    final response = await _apiClient.dio.get(
+      ApiPath.getListPage(provider, subscribed, searchText),
+      options: Options(headers: {'organizationid': organizationId}),
+    );
+
     return response.data;
   }
 

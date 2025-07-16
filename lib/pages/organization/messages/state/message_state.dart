@@ -326,7 +326,9 @@ class MessageNotifier extends StateNotifier<MessageState> {
       final response = await _repository.getConversationList(
         organizationId,
         page: forceRefresh ? 0 : state.page,
+        integrationAuthId: "",
         provider: currentProvider,
+        searchText: '',
       );
 
       final List<Conversation> conversations =

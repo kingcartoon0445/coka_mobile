@@ -7,6 +7,7 @@ import 'package:coka/api/repositories/organization_repository.dart';
 import 'package:coka/shared/widgets/awesome_alert.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -527,15 +528,19 @@ Future getVersion() async {
 }
 
 Future getOData() async {
-  final prefs = await SharedPreferences.getInstance();
+  final organList = await fetchOrganList();
+  // final prefs = await SharedPreferences.getInstance();
+  if (organList == null || organList.isEmpty) {
+    return Future.error('No organizations found');
+  }
 
-  return prefs.getString('oData');
+  return organList[0];
 }
 
 Future getAccessToken() async {
-  final prefs = await SharedPreferences.getInstance();
-
-  return prefs.getString('accessToken');
+  const storage = FlutterSecureStorage();
+  final token = await storage.read(key: 'access_token');
+  return token ?? '';
 }
 
 Future getRefreshToken() async {

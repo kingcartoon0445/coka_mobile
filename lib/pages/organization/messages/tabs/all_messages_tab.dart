@@ -124,7 +124,7 @@ class _AllMessagesTabState extends ConsumerState<AllMessagesTab>
             content: conversation.snippet,
             isFileMessage: conversation.isFileMessage,
             time: conversation.updatedTime.toIso8601String(),
-            platform: "ALL",
+            platform: conversation.provider,
             avatar: conversation.personAvatar,
             pageAvatar: conversation.pageAvatar,
           );

@@ -35,8 +35,10 @@ class ApiPath {
   static const String assignableUsers = '$_prefix/organization/workspace/user/getlistpaging';
   static const String teamList = '$_prefix/organization/workspace/team/getlistpaging';
 
+  static String updateStatisOmniChannel(String id) =>
+      '$_prefix/integration/omnichannel/updatestatus/$id';
   static String getListPage(String provider, String subscribed, String searchText) =>
-      '$_prefix/integration/omnichannel/getlistpaging?Provider=$provider&Subscribed=$subscribed&searchText=$searchText&Fields=Name';
+      '$_prefix/integration/omnichannel/getlistpaging?Provider=$provider&Subscribed=$subscribed&searchText=$searchText&Fields=Name&limit=20';
   static String updateStatusRead(String conversationId) =>
       '$_prefix/integration/omni/conversation/read/$conversationId';
   // /api/v1/integration/omni/conversation/read/{conversationId}

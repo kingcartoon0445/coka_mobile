@@ -1,16 +1,18 @@
+import 'dart:async';
+
+import 'package:coka/api/api_client.dart';
+import 'package:coka/api/repositories/auth_repository.dart';
+import 'package:coka/api/repositories/notification_repository.dart';
+import 'package:coka/api/repositories/organization_repository.dart';
 import 'package:coka/core/theme/text_styles.dart';
+import 'package:coka/paths.dart';
 import 'package:coka/shared/widgets/avatar_widget.dart';
+import 'package:coka/shared/widgets/custom_bottom_navigation.dart';
+import 'package:coka/shared/widgets/notification_list_widget.dart';
+import 'package:coka/shared/widgets/organization_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:coka/api/repositories/auth_repository.dart';
-import 'package:coka/api/api_client.dart';
-import 'package:coka/shared/widgets/custom_bottom_navigation.dart';
-import 'package:coka/api/repositories/organization_repository.dart';
-import 'package:coka/api/repositories/notification_repository.dart';
-import 'package:coka/shared/widgets/organization_drawer.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:coka/shared/widgets/notification_list_widget.dart';
-import 'dart:async';
 
 class OrganizationPage extends StatefulWidget {
   final String organizationId;
@@ -44,8 +46,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
   @override
   void didUpdateWidget(OrganizationPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    print(
-        'didUpdateWidget - old: ${oldWidget.organizationId}, new: ${widget.organizationId}');
+    print('didUpdateWidget - old: ${oldWidget.organizationId}, new: ${widget.organizationId}');
     if (oldWidget.organizationId != widget.organizationId) {
       print('Organization ID changed - reloading data');
       _loadOrganizations();
@@ -80,8 +81,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
       });
 
       if (widget.organizationId == 'default') {
-        final defaultOrgId =
-            await ApiClient.storage.read(key: 'default_organization_id');
+        final defaultOrgId = await ApiClient.storage.read(key: 'default_organization_id');
         print('Đọc organization mặc định: $defaultOrgId');
 
         if (defaultOrgId != null && organizations.isNotEmpty) {
@@ -123,8 +123,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
             key: 'default_organization_id',
             value: widget.organizationId,
           );
-          final savedOrgId =
-              await ApiClient.storage.read(key: 'default_organization_id');
+          final savedOrgId = await ApiClient.storage.read(key: 'default_organization_id');
           print('Kiểm tra lại organization mặc định đã lưu: $savedOrgId');
         } else {
           print('Organization ID ${widget.organizationId} không tìm thấy trong danh sách.');
@@ -259,14 +258,14 @@ class _OrganizationPageState extends State<OrganizationPage> {
     }
 
     if (_isLoadingOrganizationsError) {
-        return const Text(
-          'Lỗi tải tổ chức',
-          style: TextStyle(color: Colors.red),
-        );
+      return const Text(
+        'Lỗi tải tổ chức',
+        style: TextStyle(color: Colors.red),
+      );
     }
 
     if (_organizationInfo == null && widget.organizationId != 'default') {
-       return _buildSkeletonTitle();
+      return _buildSkeletonTitle();
     }
 
     return Column(
@@ -318,7 +317,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
         context.replace('/organization/${widget.organizationId}');
         break;
       case 1:
-        context.replace('/organization/${widget.organizationId}/messages');
+        context.replace(AppPaths.messages(widget.organizationId));
         break;
       case 2:
         context.replace('/organization/${widget.organizationId}/campaigns');
@@ -353,7 +352,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
             showMoreOption: false,
             fullScreen: true,
           );
-          
+
           return notificationWidget;
         },
       ),
@@ -367,73 +366,79 @@ class _OrganizationPageState extends State<OrganizationPage> {
   Widget build(BuildContext context) {
     // Kiểm tra xem có đang ở trang AI Chatbot không
     final isAIChatbotPage = _isAIChatbotPage(context);
-    
+
     return Scaffold(
       key: _scaffoldKey,
       drawer: _buildDrawer(),
-      appBar: isAIChatbotPage ? null : AppBar(
-        leading: _buildAvatar(),
-        title: _buildTitle(context),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.notifications_outlined),
-                  onPressed: _navigateToNotifications,
-                  style: const ButtonStyle(
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      appBar: isAIChatbotPage
+          ? null
+          : AppBar(
+              leading: _buildAvatar(),
+              title: _buildTitle(context),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.notifications_outlined),
+                        onPressed: _navigateToNotifications,
+                        style: const ButtonStyle(
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                      ),
+                      if (_unreadNotificationCount > 0)
+                        Positioned(
+                          right: 0,
+                          top: 2,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.white, width: 1),
+                            ),
+                            constraints: const BoxConstraints(
+                              minWidth: 16,
+                              minHeight: 16,
+                            ),
+                            child: Text(
+                              _unreadNotificationCount > 99
+                                  ? '99+'
+                                  : _unreadNotificationCount.toString(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 8,
+                                fontWeight: FontWeight.bold,
+                                height: 1,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
-                if (_unreadNotificationCount > 0)
-                  Positioned(
-                    right: 0,
-                    top: 2,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.white, width: 1),
-                      ),
-                      constraints: const BoxConstraints(
-                        minWidth: 16,
-                        minHeight: 16,
-                      ),
-                      child: Text(
-                        _unreadNotificationCount > 99 ? '99+' : _unreadNotificationCount.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 8,
-                          fontWeight: FontWeight.bold,
-                          height: 1,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
+                const SizedBox(width: 8),
               ],
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(1),
+                child: Container(
+                  height: 1,
+                  color: Colors.grey.withValues(alpha: 0.2),
+                ),
+              ),
             ),
-          ),
-          const SizedBox(width: 8),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(
-            height: 1,
-                            color: Colors.grey.withValues(alpha: 0.2),
-          ),
-        ),
-      ),
       body: widget.child,
-      bottomNavigationBar: isAIChatbotPage ? null : CustomBottomNavigation(
-        selectedIndex: _calculateSelectedIndex(context),
-        onTapped: (index) => _onItemTapped(index, context),
-        showCampaignBadge: false,
-        showSettingsBadge: false,
-      ),
+      bottomNavigationBar: isAIChatbotPage
+          ? null
+          : CustomBottomNavigation(
+              selectedIndex: _calculateSelectedIndex(context),
+              onTapped: (index) => _onItemTapped(index, context),
+              showCampaignBadge: false,
+              showSettingsBadge: false,
+            ),
     );
   }
 }
