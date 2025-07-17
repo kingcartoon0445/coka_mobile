@@ -24,7 +24,7 @@ class ChatState {
   final bool hasMore;
   final bool isSending;
   final Map<String, String> messageErrors;
-
+  final String? errorMessage;
   ChatState({
     this.isLoading = false,
     this.messages = const [],
@@ -32,6 +32,7 @@ class ChatState {
     this.hasMore = true,
     this.isSending = false,
     this.messageErrors = const {},
+    this.errorMessage,
   });
 
   ChatState copyWith({
@@ -39,6 +40,7 @@ class ChatState {
     List<Message>? messages,
     int? page,
     bool? hasMore,
+    String? errorMessage,
     bool? isSending,
     Map<String, String>? messageErrors,
   }) {
@@ -46,6 +48,7 @@ class ChatState {
       isLoading: isLoading ?? this.isLoading,
       messages: messages ?? this.messages,
       page: page ?? this.page,
+      errorMessage: errorMessage ?? this.errorMessage,
       hasMore: hasMore ?? this.hasMore,
       isSending: isSending ?? this.isSending,
       messageErrors: messageErrors ?? this.messageErrors,
@@ -225,7 +228,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
         messageId: localId,
         attachments: attachments,
       );
-
+      if (response['status'] != 0) {
+        state = state.copyWith(errorMessage: response['message']);
+      }
       // Server sẽ trả về tin nhắn thật qua Firebase/WebSocket
       // Ta chỉ cần remove local message khi server message arrive
       _removeLocalMessage(localId);

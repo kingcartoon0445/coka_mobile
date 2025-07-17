@@ -24,16 +24,16 @@ class ApiClient {
   void Function()? onUnauthorized;
 
   /// Khởi tạo Dio và interceptor
-  Future<void> init() async {
-    final baseUrl = await getBaseUrl();
+  Future<void> init({String? customBaseUrl}) async {
+    final urlToUse = customBaseUrl ?? await getBaseUrl();
 
     dio = Dio(BaseOptions(
-      baseUrl: baseUrl,
+      baseUrl: urlToUse,
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
     ));
 
-    dio.interceptors.clear(); // clear cũ tránh bị trùng interceptor
+    dio.interceptors.clear();
 
     dio.interceptors.add(
       InterceptorsWrapper(
@@ -65,11 +65,10 @@ class ApiClient {
     return prefs.getString(_baseUrlKey) ?? baseUrl;
   }
 
-  /// Lưu baseUrl mới
   Future<void> setBaseUrl(String url) async {
     final prefs = await SharedPreferences.getInstance();
-    init(); // Reinitialize Dio with the new base URL
     await prefs.setString(_baseUrlKey, url);
+    await init(); // Reinitialize Dio with the new base URL
   }
 
   // ================== Interceptors ==================

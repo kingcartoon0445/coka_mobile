@@ -2,7 +2,7 @@ name: coka
 description: A new Flutter project.
 publish_to: "none"
 
-version: 2.0.0+12
+version: 2.0.0+13
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -70,7 +70,7 @@ dependencies:
   equatable: ^2.0.7
   webview_flutter: ^4.13.0
   open_file: ^3.5.10
-
+  easy_localization: ^3.0.7+1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -84,6 +84,7 @@ flutter:
     - assets/icons/
     - assets/animations/
     - shorebird.yaml
+    - assets/translations/
 
   fonts:
     - family: GoogleSans

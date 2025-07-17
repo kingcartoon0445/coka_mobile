@@ -18,11 +18,12 @@ import '../../core/utils/helpers.dart';
 class SettingsPage extends StatefulWidget {
   final String? organizationId;
   final String? userRole;
-
+  final String? workspaceId;
   const SettingsPage({
     super.key,
     this.organizationId,
     this.userRole,
+    required this.workspaceId,
   });
 
   @override
@@ -269,6 +270,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => MessagesConnectionPage(
                 organizationId: widget.organizationId ?? '',
+                workspaceId: widget.workspaceId ?? '',
               ),
             ));
           },

@@ -520,7 +520,8 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 1,
+        // shadowColor: Colors.red,
+        // elevation: 50,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -654,6 +655,20 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
               ),
             ).animate().fadeIn(duration: 200.ms).slideY(begin: -0.5, end: 0),
 
+          Container(
+            height: 5,
+            decoration: BoxDecoration(
+              // color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+              gradient: LinearGradient(
+                colors: [
+                  Colors.black.withValues(alpha: 0.2),
+                  Colors.transparent,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
           Expanded(
             child: chatState.isLoading && chatState.messages.isEmpty
                 ? const Center(child: LoadingIndicator())
@@ -724,6 +739,16 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                     },
                   ),
           ),
+          if (chatState.errorMessage != null) ...[
+            Container(
+              padding: const EdgeInsets.all(12),
+              color: Colors.red.withValues(alpha: 0.1),
+              child: Text(
+                chatState.errorMessage!,
+                style: TextStyle(color: Colors.red, fontSize: 14),
+              ),
+            ),
+          ],
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             decoration: BoxDecoration(
@@ -734,6 +759,13 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                   width: 1,
                 ),
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 5,
+                  offset: const Offset(0, -2),
+                ),
+              ],
             ),
             child: SafeArea(
               child: Row(

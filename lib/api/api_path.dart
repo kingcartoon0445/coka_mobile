@@ -25,6 +25,7 @@ class ApiPath {
       '$_prefix/omni/conversation/updatechatbotstatus/$conversationId?Status=$status';
 // Message & Conversation
   static const String fbConnect = '$_prefix/auth/facebook/message';
+  static const String fbConnect3 = '$_prefix/auth/facebook/message/manual';
   static const String conversationList = '$_prefix/omni/conversation/getlistpaging';
   static const String chatList = '$_prefix/social/message/getlistpaging';
   static const String sendMessage = '$_prefix/social/message/sendmessage';

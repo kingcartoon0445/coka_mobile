@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -9,17 +10,31 @@ import 'package:image_picker/image_picker.dart';
 
 class MessageRepository {
   final ApiClient _apiClient;
-
   MessageRepository(this._apiClient);
-
-  Future<Map<String, dynamic>> connectFacebook(String organizationId, dynamic data) async {
+  Future<Map<String, dynamic>> connectFacebook(
+      String organizationId, String workspaceId, String data) async {
+    log("Connecting Facebook with data: $data");
     final response = await _apiClient.dio.post(
-      ApiPath.fbConnect,
+      ApiPath.fbConnect3,
       data: data,
-      options: Options(headers: {'organizationid': organizationId}),
+      options: Options(headers: {
+        'organizationid': organizationId,
+      }),
     );
 
     return response.data;
+  }
+
+  Future<Map<String, dynamic>> getPagesFaceWithToken(
+    String tokenFB,
+  ) async {
+    log("Fetching Facebook pages with token: $tokenFB");
+    String url = 'https://graph.facebook.com/v23.0/me/accounts?access_token=$tokenFB';
+    final response = await Dio().get(
+      url,
+    );
+
+    return json.decode(response.data);
   }
 
   Future<Map<String, dynamic>> getConversationList(
